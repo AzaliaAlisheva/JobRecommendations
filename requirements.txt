@@ -1,4 +1,7 @@
-pylint
-pyspark
-pandas
-streamlit
+pylint==4.0.5
+pyspark==4.1.1
+pandas==2.0.3
+numpy==1.24.3
+streamlit==0.84.0
+psycopg2-binary
+kaggle

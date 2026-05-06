@@ -1,0 +1,97 @@
+{
+  "type" : "record",
+  "name" : "users",
+  "doc" : "Sqoop import of users",
+  "fields" : [ {
+    "name" : "userid",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "userid",
+    "sqlType" : "4"
+  }, {
+    "name" : "windowid",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "windowid",
+    "sqlType" : "4"
+  }, {
+    "name" : "split",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "split",
+    "sqlType" : "12"
+  }, {
+    "name" : "city",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "city",
+    "sqlType" : "12"
+  }, {
+    "name" : "state",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "state",
+    "sqlType" : "12"
+  }, {
+    "name" : "country",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "country",
+    "sqlType" : "12"
+  }, {
+    "name" : "zipcode",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "zipcode",
+    "sqlType" : "12"
+  }, {
+    "name" : "degree",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "degree",
+    "sqlType" : "12"
+  }, {
+    "name" : "major",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "major",
+    "sqlType" : "12"
+  }, {
+    "name" : "graddate",
+    "type" : [ "null", "long" ],
+    "default" : null,
+    "columnName" : "graddate",
+    "sqlType" : "93"
+  }, {
+    "name" : "jobcnt",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "jobcnt",
+    "sqlType" : "4"
+  }, {
+    "name" : "yearsexp",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "yearsexp",
+    "sqlType" : "4"
+  }, {
+    "name" : "employed",
+    "type" : [ "null", "boolean" ],
+    "default" : null,
+    "columnName" : "employed",
+    "sqlType" : "-7"
+  }, {
+    "name" : "managerexp",
+    "type" : [ "null", "boolean" ],
+    "default" : null,
+    "columnName" : "managerexp",
+    "sqlType" : "-7"
+  }, {
+    "name" : "emplcnt",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "emplcnt",
+    "sqlType" : "4"
+  } ],
+  "tableName" : "users"
+}

@@ -1,0 +1,249 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP DATABASE IF EXISTS team17_projectdb CASCADE;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE DATABASE team17_projectdb LOCATION "project/hive/warehouse";
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team17_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS window_dates_raw;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE window_dates_raw (
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     trainstart BIGINT,
+. . . . . . . . . . . . . . . . . . . . . . .>     teststart BIGINT,
+. . . . . . . . . . . . . . . . . . . . . . .>     testend BIGINT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/window_dates'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ('parquet.compression' = 'GZIP');
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- 2. users_raw
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS users_raw;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE users_raw (
+. . . . . . . . . . . . . . . . . . . . . . .>     userid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     split STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     city STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     state STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     country STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     zipcode STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     degree STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     major STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     graddate BIGINT,
+. . . . . . . . . . . . . . . . . . . . . . .>     jobcnt INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     yearsexp INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     employed BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     managerexp BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     emplcnt INT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/users'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ('parquet.compression' = 'GZIP');
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- 3. user_history (no timestamps - use as is)
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE user_history (
+. . . . . . . . . . . . . . . . . . . . . . .>     userid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     split STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     sequence INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     jobtitle STRING
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/user_history'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ('parquet.compression' = 'GZIP');
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- 4. jobs_raw
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS jobs_raw;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE jobs_raw (
+. . . . . . . . . . . . . . . . . . . . . . .>     jobid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     title STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     description STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     requirements STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     city STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     state STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     country STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     zipcode STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     `start` BIGINT,
+. . . . . . . . . . . . . . . . . . . . . . .>     `finish` BIGINT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/jobs'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ('parquet.compression' = 'GZIP');
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- 5. apps_raw
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS apps_raw;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE apps_raw (
+. . . . . . . . . . . . . . . . . . . . . . .>     appid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     userid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     split STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     `date` BIGINT,
+. . . . . . . . . . . . . . . . . . . . . . .>     jobid INT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/apps'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ('parquet.compression' = 'GZIP');
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- 1. window_dates view
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE OR REPLACE VIEW window_dates AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid,
+. . . . . . . . . . . . . . . . . . . . . . .>     FROM_UNIXTIME(CAST(trainstart / 1000 AS BIGINT)) AS trainstart,
+. . . . . . . . . . . . . . . . . . . . . . .>     FROM_UNIXTIME(CAST(teststart / 1000 AS BIGINT)) AS teststart,
+. . . . . . . . . . . . . . . . . . . . . . .>     FROM_UNIXTIME(CAST(testend / 1000 AS BIGINT)) AS testend
+. . . . . . . . . . . . . . . . . . . . . . .> FROM window_dates_raw;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- 2. users view
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE OR REPLACE VIEW users AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 
+. . . . . . . . . . . . . . . . . . . . . . .>     userid,
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid,
+. . . . . . . . . . . . . . . . . . . . . . .>     split,
+. . . . . . . . . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . . . . . . . . .>     state,
+. . . . . . . . . . . . . . . . . . . . . . .>     country,
+. . . . . . . . . . . . . . . . . . . . . . .>     zipcode,
+. . . . . . . . . . . . . . . . . . . . . . .>     degree,
+. . . . . . . . . . . . . . . . . . . . . . .>     major,
+. . . . . . . . . . . . . . . . . . . . . . .>     FROM_UNIXTIME(CAST(graddate / 1000 AS BIGINT)) AS graddate,
+. . . . . . . . . . . . . . . . . . . . . . .>     jobcnt,
+. . . . . . . . . . . . . . . . . . . . . . .>     yearsexp,
+. . . . . . . . . . . . . . . . . . . . . . .>     employed,
+. . . . . . . . . . . . . . . . . . . . . . .>     managerexp,
+. . . . . . . . . . . . . . . . . . . . . . .>     emplcnt
+. . . . . . . . . . . . . . . . . . . . . . .> FROM users_raw;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- 4. jobs view
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE OR REPLACE VIEW jobs AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 
+. . . . . . . . . . . . . . . . . . . . . . .>     jobid,
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid,
+. . . . . . . . . . . . . . . . . . . . . . .>     title,
+. . . . . . . . . . . . . . . . . . . . . . .>     description,
+. . . . . . . . . . . . . . . . . . . . . . .>     requirements,
+. . . . . . . . . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . . . . . . . . .>     state,
+. . . . . . . . . . . . . . . . . . . . . . .>     country,
+. . . . . . . . . . . . . . . . . . . . . . .>     zipcode,
+. . . . . . . . . . . . . . . . . . . . . . .>     FROM_UNIXTIME(CAST(`start` / 1000 AS BIGINT)) AS start_time,
+. . . . . . . . . . . . . . . . . . . . . . .>     FROM_UNIXTIME(CAST(`finish` / 1000 AS BIGINT)) AS finish_time
+. . . . . . . . . . . . . . . . . . . . . . .> FROM jobs_raw;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- 5. apps view
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE OR REPLACE VIEW apps AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 
+. . . . . . . . . . . . . . . . . . . . . . .>     appid,
+. . . . . . . . . . . . . . . . . . . . . . .>     userid,
+. . . . . . . . . . . . . . . . . . . . . . .>     windowid,
+. . . . . . . . . . . . . . . . . . . . . . .>     split,
+. . . . . . . . . . . . . . . . . . . . . . .>     FROM_UNIXTIME(CAST(`date` / 1000 AS BIGINT)) AS application_date,
+. . . . . . . . . . . . . . . . . . . . . . .>     jobid
+. . . . . . . . . . . . . . . . . . . . . . .> FROM apps_raw;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM window_dates LIMIT 10;
++------------------------+--------------------------+-------------------------+-----------------------+
+| window_dates.windowid  | window_dates.trainstart  | window_dates.teststart  | window_dates.testend  |
++------------------------+--------------------------+-------------------------+-----------------------+
+| 1                      | 2012-04-01 00:00:00      | 2012-04-10 00:00:00     | 2012-04-14 00:00:00   |
+| 2                      | 2012-04-14 00:00:00      | 2012-04-23 00:00:00     | 2012-04-27 00:00:00   |
+| 3                      | 2012-04-27 00:00:00      | 2012-05-06 00:00:00     | 2012-05-10 00:00:00   |
+| 4                      | 2012-05-10 00:00:00      | 2012-05-19 00:00:00     | 2012-05-23 00:00:00   |
+| 5                      | 2012-05-23 00:00:00      | 2012-06-01 00:00:00     | 2012-06-05 00:00:00   |
+| 6                      | 2012-06-05 00:00:00      | 2012-06-14 00:00:00     | 2012-06-18 00:00:00   |
+| 7                      | 2012-06-18 00:00:00      | 2012-06-27 00:00:00     | 2012-07-01 00:00:00   |
++------------------------+--------------------------+-------------------------+-----------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM users LIMIT 10;
++---------------+-----------------+--------------+---------------+--------------+----------------+----------------+---------------+------------------------+----------------------+---------------+-----------------+-----------------+-------------------+----------------+
+| users.userid  | users.windowid  | users.split  |  users.city   | users.state  | users.country  | users.zipcode  | users.degree  |      users.major       |    users.graddate    | users.jobcnt  | users.yearsexp  | users.employed  | users.managerexp  | users.emplcnt  |
++---------------+-----------------+--------------+---------------+--------------+----------------+----------------+---------------+------------------------+----------------------+---------------+-----------------+-----------------+-------------------+----------------+
+| 47            | 1               | Train        | Paramount     | CA           | US             | 90723          | High School   | NULL                   | 1999-06-01 00:00:00  | 3             | 10              | true            | false             | 0              |
+| 72            | 1               | Train        | La Mesa       | CA           | US             | 91941          | Master's      | Anthropology           | 2011-01-01 00:00:00  | 10            | 8               | true            | false             | 0              |
+| 80            | 1               | Train        | Williamstown  | NJ           | US             | 08094          | High School   | Not Applicable         | 1985-06-01 00:00:00  | 5             | 11              | true            | true              | 5              |
+| 98            | 1               | Train        | Astoria       | NY           | US             | 11105          | Master's      | Journalism             | 2007-05-01 00:00:00  | 3             | 3               | true            | false             | 0              |
+| 123           | 1               | Train        | Baton Rouge   | LA           | US             | 70808          | Bachelor's    | Agricultural Business  | 2011-05-01 00:00:00  | 1             | 9               | true            | false             | 0              |
+| 131           | 1               | Train        | Houston       | TX           | US             | 77077          | Bachelor's    | Finance                | 1998-05-01 00:00:00  | 3             | 14              | NULL            | false             | 0              |
+| 162           | 1               | Train        | Long Beach    | CA           | US             | 90807          | Master's      | I/O Psychology         | 2012-05-01 00:00:00  | 10            | 25              | false           | false             | 0              |
+| 178           | 1               | Train        | Greenville    | SC           | US             | 29609          | High School   | Not Applicable         | NULL                 | 6             | 35              | false           | true              | 4              |
+| 203           | 1               | Train        | Colchester    | VT           | US             | 05446          | Master's      | Burlington             | NULL                 | 4             | 3               | true            | false             | 0              |
+| 344           | 1               | Train        | Newport News  | VA           | US             | 23601          | High School   | Not Applicable         | 2007-01-01 00:00:00  | 3             | 7               | true            | false             | 0              |
++---------------+-----------------+--------------+---------------+--------------+----------------+----------------+---------------+------------------------+----------------------+---------------+-----------------+-----------------+-------------------+----------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM user_history LIMIT 10;
++----------------------+------------------------+---------------------+------------------------+----------------------------------------------------+
+| user_history.userid  | user_history.windowid  | user_history.split  | user_history.sequence  |               user_history.jobtitle                |
++----------------------+------------------------+---------------------+------------------------+----------------------------------------------------+
+| 47                   | 1                      | Train               | 1                      | National Space Communication Programs-Special Program Supervisor |
+| 47                   | 1                      | Train               | 2                      | Detention Officer                                  |
+| 47                   | 1                      | Train               | 3                      | Passenger Screener, TSA                            |
+| 72                   | 1                      | Train               | 1                      | Lecturer, Department of Anthropology               |
+| 72                   | 1                      | Train               | 2                      | Student Assistant                                  |
+| 72                   | 1                      | Train               | 3                      | Elderly Caregiver                                  |
+| 72                   | 1                      | Train               | 4                      | NULL                                               |
+| 72                   | 1                      | Train               | 5                      | Department Assistant, Department                   |
+| 72                   | 1                      | Train               | 6                      | Book Reviews Editorial Assistant                   |
+| 72                   | 1                      | Train               | 7                      | Graduate Assistant                                 |
++----------------------+------------------------+---------------------+------------------------+----------------------------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM jobs LIMIT 10;
++-------------+----------------+----------------------------------------------+----------------------------------------------------+----------------------------------------------------+---------------+-------------+---------------+---------------+----------------------+----------------------+
+| jobs.jobid  | jobs.windowid  |                  jobs.title                  |                  jobs.description                  |                 jobs.requirements                  |   jobs.city   | jobs.state  | jobs.country  | jobs.zipcode  |   jobs.start_time    |   jobs.finish_time   |
++-------------+----------------+----------------------------------------------+----------------------------------------------------+----------------------------------------------------+---------------+-------------+---------------+---------------+----------------------+----------------------+
+| 1           | 1              | Security Engineer/Technical Lead             | <p>Security Clearance Required:&nbsp; Top Secret </p><p>Job Number: TMR-447</p><p>Location of Job:&nbsp; Washington, DC</p><p>TMR, Inc. is an Equal Employment Opportunity Company</p><p>For more job opportunities with TMR, visit our website <a href="http://www.tmrhq.com/">www.tmrhq.com</a></p><p>Send Resumes to HR@tmrhq2.com</p><p>&nbsp;</p><p>JOB SUMMARY:</p><p>&nbsp;</p><p>Leads the customer&rsquo;s overall Cyber Security strategy, formalizes service offerings consisted with ITIL best practices, and provides design and architecture support.</p><p>&nbsp;</p><ul>    <li>Provide security design / architecture support for OJP&rsquo;s IT Security Division (ITSD) </li>    <li>Leads the SECOPS team in the day to day OJP Security Operations support&nbsp; </li>    <li>Provides direction when needed in a security incident or technical issues </li>    <li>Works in concert with network operations on design /integration for best security posture</li>    <li>Supports business development functions including Capture Management, Proposal Development and responses, and other initiatives to include conferences, trade shows, webinars, developing white papers and the like.</li>    <li>Identifies resources and mentors in-house talent to ensure TMR remains responsive to growing initiatives and contracts with qualified personnel.&nbsp;&nbsp; </li></ul><p>&nbsp;</p><p><a href="https://www.tmrhq.com/jobapplicationstep1.aspx"><span></span></a>&nbsp;</p> | <p>SKILL SET</p><p>&nbsp;</p><p>Network Security tools:</p><p>&nbsp;</p><p>Webdefend Web Application Firewall (WAF), Cisco Routers, Fortigate 3800 Firewall series, Palo Alto 4000 firewall series, Cisco ASA 5xx Firewall Platform, Cisco&nbsp; FWSM,&nbsp; SourceFire Defense Center, SourceFire IP Sensor Platform, BlueCoat SG Appliance, F5 BigIP(reverse proxy).</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p><p>Web Application tools:&nbsp; </p><p>&nbsp;</p><p>AppDective, Fortify SCA, HP WebInspect, and the like.</p><p>&nbsp;</p><p>Network Vulnerability tools:&nbsp; </p><p>&nbsp;</p><p>Tenable Security Center, McAfee Foundstone scanner, Cain and Able, L0phtcrack - Password Cracker, Nessus Vulnerability Scanner, NMAP &ndash; Port Scanner, and other scanning and vulnerability mapping tools.&nbsp; </p><p>&nbsp;</p><p>&nbsp;</p><p>DESIRABLE SKILLS:</p><p>&nbsp;</p><p>CISSP and/or related Certifications</p><p>&nbsp;</p><p>EDUCATION AND YEARS OF EXPERIENCE:</p><p>&nbsp;</p><p>BS Computer Science or related discipline; minimum of 8 years in IT Security; minimum 4 years in Senior/Lead position</p><p>&nbsp;</p><p><a href="https://www.tmrhq.com/jobapplicationstep1.aspx"><span>APPLY HERE</span></a></p> | Washington    | DC          | US            | 20531         | 2012-03-07 13:17:01  | 2012-04-06 23:59:59  |
+| 4           | 1              | SAP Business Analyst / WM                    | <strong>NO Corp. to Corp resumes&nbsp;are being considered for this &ldquo;Direct Hire" permanent position</strong><p><strong>H-1B Transfers ARE Available for Qualified Candidates with 5+ years of WM experience<br /></strong>&nbsp;</p><p><b>SAP/ WM Warehouse Management Sr. Business Analyst</b></p><p>Position&rsquo;s Location is the Charlotte, NC metro area<br /><br /></p><p><i>We are currently seeking a Senior SAP Business Analyst with a minimum of 5 years of SAP/ WM Warehouse Management experience for a "<b>direct hire opportunity"</b> in the Charlotte, NC area. The successful candidate will have expertise providing requirements development, hands-on day-to-day support of internal customers and relaying their specifications to technical analysts. In this role you will develop best business practice knowledge and support the business in integrating this into SAP solution. </i><i></i></p><p><b></b>&nbsp;</p><p><b>You will serve as &hellip;</b></p><p>A liaison to the business unit and define and support the SAP WM applications. You&rsquo;ll provide expertise in SAP WM &hellip;warehouse management and execution converting legacy systems to SAP. Additionally, you&rsquo;ll offer your expertise with configurations, implementations, customization support and conditioning techniques. This role is accountable for providing hands-on day-to-day support to the business units as needed, including gathering business requirements from internal customers and relaying those needs to their technical analysts. The role supports the business in integrating legacy systems into SAP solutions and integrates with SAP Roll-Out teams to provide the Business unit with Customization Support.</p><p><b></b>&nbsp;</p><p><b>WHAT YOU WILL CONTRIBUTE:</b></p><p>Identify business stakeholders and areas of impact. </p><p>Gather and analyze business requirements from clients and stakeholders. </p><p>Complete impact assessments that outline the technical impact of new functionality and enhancements. </p><p>Model Use Cases. </p><p>Create and maintain requirements traceability. </p><p>Research and identify opportunities for the business to distinguish itself as a leader in the manufacturing industry. </p><p>Research the manufacturing industry to identify leading examples and best-in-class implementations. </p><p>Help define functional strategy and vision and identify opportunities to innovate. </p><p>Schedule, coordinate, prepare and facilitate requirements gathering sessions. </p><p>Peer review team member requirements for completeness and accuracy. </p><p>Facilitate requirements prioritization sessions. </p><p>Obtain approval and business sign-off on requirements. </p><p>Integrate with SAP Roll Out teams to provide Business and Customization Support for SAP warehouse applications and non SAP applications.</p><p>&nbsp;</p><p><b>What you will Gain:</b> </p><p>Full-time employment <b>&ldquo;direct hire"</b> with a well-established company in a great location! Competitive salary, excellent benefits &hellip; PTO, insurance package, 401K etc. Relocation is provided. You will be working with a strong group of technical associates in an excellent work environment for a company that provides stable employment opportunities &hellip; working for one of the Charlotte, NC areas premier employers. Great Team and work environment!</p> | <p><b>WHAT YOU NEED: </b></p><p>Four year college degree</p><p>Minimum 5 to 8+ years of SAP experience</p><p>3-5 years experience working with WM SAP module ... need strength in a manufacturing environment converting legacy systems to SAP, expertise with configurations, implementations, customization support and conditioning techniques.</p><p>2 full life cycle implementations of SAP WM (new implementations or conversion from legacy applications preferred.</p><p>Experience working in a manufacturing environment</p><p>5 to 8 years of functional experience</p><p>Strong Microsoft Office skills </p><p>Ability to work with an appropriate sense of urgency and drive for results. </p><p>Must be well organized with the ability to handle multiple assignments and prioritize appropriately. </p><p><b><br /></b>&nbsp;</p> | Charlotte     | NC          | US            | 28217         | 2012-03-21 02:03:44  | 2012-04-20 23:59:59  |
+| 7           | 1              | P/T HUMAN RESOURCES ASSISTANT                | <b>    <b> P/T HUMAN RESOURCES ASSISTANT</b> </b>  ——  1-2 years experience in HR & Benefits, strong customer service, interview and speaking skills. Fax Resume and Questions to 407.645.0157                 WEB OS16509              <p>                 
+                
+                 <br /><br />Source - Orlando Sentinel | Please refer to the Job Description to view the requirements for this job | Winter Park   | FL          | US            | 32792         | 2012-03-02 16:36:55  | 2012-04-01 23:59:59  |
+| 8           | 1              | Route Delivery Drivers                       | CITY BEVERAGES Come to work for the best in the business! City Beverages, the Premier distributor of Anheuser Busch products has the following Full Time career opportunity: ROUTE DELIVERY DRIVERS Qualified candidates will be self-motivated and possesses a clean CDL Class ?A? license. Competitive salary, benefits and opportunity for advancement. Apply in person at our facility: 10928 Florida Crown Drive, Airport Industrial Park. EEO/DFWP <br><br>Source - Orlando Sentinel | Please refer to the Job Description to view the requirements for this job | Orlando       | FL          | US            | NULL          | 2012-03-03 09:01:10  | 2012-04-02 23:59:59  |
+| 9           | 1              | Housekeeping                                 | I make  sure every part of their day is magical. I am Disney. Dreams. That?s what you?ll find at the Walt Disney World? Resort. There are many guest service and entertainment roles in which our cast members bring Disney dreams to life. From our enchanted Theme Parks and world-class Resort Hotels to our spectacular shows and beloved characters, Walt Disney World Resort cast members have a world of opportunity and take pride in turning dreams into realities. Opportunities currently available: Housekeeping ? Bus Drivers ? Custodial Recreation ? Stewards ? Culinary ? Lifeguards Quick Service Food and Beverage Character Look-alike Performers For more information and to apply online, visit WaltDisneyWorld.jobs/NowHiring Apply online today! EOE ? Drawing Creativity from Diversity ? Disney <br><br>Source - Orlando Sentinel | Please refer to the Job Description to view the requirements for this job | Orlando       | FL          | US            | NULL          | 2012-03-03 09:01:11  | 2012-04-02 23:59:59  |
+| 10          | 1              | SALON/SPA COORDINATOR                        | <b>    <b>— SALON/SPA COORDINATOR                    </b> </b>   — Daytona College in Ormond Beach, Florida is currently interviewing for a Salon/Spa Coordinator. The primary role of the Salon/Spa Coordinator is responsible for greeting guests, customer check-in and check-out, answer phone lines, and schedule salon/spa reservations.                            
+ 
+ <b>Requirements</b> 
+              • Experience in a retail setting with some office skills will provide you with the best experience to do well in this position.                           
+              • Professional in appearance                           
+              • Proficiency with computer and experience using Excel is required                           
+              • Strong attention to detail and very good organizational skills                           
+              • Experience with cosmetic application a plus or willingness to learn!!                           
+              • Pleasant personality and ability to make conversation with guests.                            
+ 
+              If you are interested, please email your resume to                
+              <a href="mailto:campusdirector@daytonacollege.edu">campusdirector@daytonacollege.edu</a>   WEB OS30047              <p>                 
+                
+                 <br /><br />Source - Orlando Sentinel | Please refer to the Job Description to view the requirements for this job | Ormond Beach  | FL          | US            | 32174         | 2012-03-05 14:21:50  | 2012-04-04 23:59:59  |
+| 11          | 1              | SUPERINTENDENT                               | <b>    <b>SUPERINTENDENT</b> </b>  ——  Central Florida General Contractor seeks experienced Superintendent for commercial projects. Email resume to                           
+               <a href="mailto:Jim@hembreeconstruction.com">Jim@hembreeconstruction.com</a>                 WEB OS15396              <p>                 
+                
+                 <br><br>Source - Orlando Sentinel | Please refer to the Job Description to view the requirements for this job | Orlando       | FL          | US            | 32801         | 2012-03-06 09:21:54  | 2012-04-05 23:59:59  |
+| 12          | 1              | ELECTRONIC PRE-PRESS PROFESSIONAL            | <b>    <b>ELECTRONIC PRE-PRESS PROFESSIONAL</b> </b>  —— For comm Sheet-fed Printer.                            
+              Adobe, CS5 Suite, Rampage 12, RIP Software, Metrix Imposition, Preps, MAC OS X. Min 5 yrs exp, data & digital exp a plus. Contact Bill               
+              407-889-3100 or Fax 407-889-0993.                WEB OS18416              <p>                 
+                
+                 <br><br>Source - Orlando Sentinel | Please refer to the Job Description to view the requirements for this job | Orlando       | FL          | US            | 32808         | 2012-03-06 11:21:53  | 2012-04-05 23:59:59  |
+| 31          | 1              | EXPERIENCED ROOFERS                          | <b>    <b>EXPERIENCED ROOFERS</b> </b>  ——  Needed immediately Mon-Fri. Apply in person at 4495 35th St. Orlando, FL. 32811.                 WEB OS18414              <P>                 
+                
+                 <BR><BR>Source - Orlando Sentinel | Please refer to the Job Description to view the requirements for this job | Orlando       | FL          | US            | 32811         | 2012-03-12 16:06:57  | 2012-04-11 23:59:59  |
+| 13          | 1              | UTILITY LINE TRUCK OPERATOR/ DIGGER DERRICK  | <b>     </b> 
+ <b>    <b>UTILITY LINE TRUCK OPERATOR/ DIGGER DERRICK OPERATOR </b> </b> 
+ 
+              Tri-City Electrical Contractors Inc. is looking for a full time digger derrick operator. Must have current exp. in setting
+lighting poles and bases on construction sites. Requires
+class A CDL, clean MVR, and 10 sp road ranger exp.
+Call 407-788-3059 ext 1184, or e-mail bruce.beane@tcelectric.com for appt.
+  
+ <b>     EOE M/F/V/D, a Drug Free Workplace  </b>  WEB OS19365              <p>                 
+                
+                 <br /><br />Source - Orlando Sentinel | Please refer to the Job Description to view the requirements for this job | Orlando       | FL          | US            | 32801         | 2012-03-06 16:06:53  | 2012-04-05 23:59:59  |
++-------------+----------------+----------------------------------------------+----------------------------------------------------+----------------------------------------------------+---------------+-------------+---------------+---------------+----------------------+----------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM apps LIMIT 10;
++-------------+--------------+----------------+-------------+------------------------+-------------+
+| apps.appid  | apps.userid  | apps.windowid  | apps.split  | apps.application_date  | apps.jobid  |
++-------------+--------------+----------------+-------------+------------------------+-------------+
+| 1           | 47           | 1              | Train       | 2012-04-04 15:56:23    | 169528      |
+| 2           | 47           | 1              | Train       | 2012-04-06 01:03:00    | 284009      |
+| 3           | 47           | 1              | Train       | 2012-04-05 02:40:27    | 2121        |
+| 4           | 47           | 1              | Train       | 2012-04-05 02:37:02    | 848187      |
+| 5           | 47           | 1              | Train       | 2012-04-05 22:44:06    | 733748      |
+| 6           | 47           | 1              | Train       | 2012-04-05 02:34:40    | 576958      |
+| 7           | 47           | 1              | Train       | 2012-04-05 22:55:03    | 262470      |
+| 8           | 47           | 1              | Train       | 2012-04-05 02:38:49    | 602298      |
+| 9           | 72           | 1              | Train       | 2012-04-02 22:36:43    | 834662      |
+| 10          | 72           | 1              | Train       | 2012-04-07 15:19:58    | 1020903     |
++-------------+--------------+----------------+-------------+------------------------+-------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

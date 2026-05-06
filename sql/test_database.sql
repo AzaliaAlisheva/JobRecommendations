@@ -1,0 +1,5 @@
+SELECT * FROM window_dates LIMIT 10;
+SELECT * FROM users LIMIT 10;
+SELECT * FROM user_history LIMIT 10;
+SELECT * FROM jobs LIMIT 10;
+SELECT * FROM apps LIMIT 10;
