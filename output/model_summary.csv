@@ -1,0 +1,5 @@
+result_type,count
+False Negative,27350
+False Positive,3106
+True Negative,36495
+True Positive,158247
