@@ -6,8 +6,6 @@ DB_NAME="team17_projectdb"
 USER_NAME="team17"
 HIVE_SERVER="jdbc:hive2://hadoop-03.uni.innopolis.ru:10001"
 
-# Do not hardcode password in final public repo.
-# Run as: ./stage2.sh YOUR_PASSWORD
 PASSWORD="hgVwomtl0OIAe7cF"
 
 if [ -z "$PASSWORD" ]; then
