@@ -172,3 +172,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+data/
+metastore_db/
+notebooks/metastore_db/
+secrets/
+data/
+metastore_db/
+notebooks/metastore_db/
+secrets/
