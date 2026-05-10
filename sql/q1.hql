@@ -14,10 +14,10 @@ SET hive.resultset.use.unique.column.names = false;
 
 INSERT OVERWRITE TABLE q1_results
 SELECT
-    CAST(`date` AS STRING) AS application_date,
+    CAST(TO_DATE(`date`) AS STRING) AS application_date,
     COUNT(appid) AS total_applications
 FROM apps_part
-GROUP BY `date`
-ORDER BY `date`;
+GROUP BY TO_DATE(`date`)
+ORDER BY application_date;
 
 SELECT * FROM q1_results;
